@@ -4,17 +4,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_ikimono_zukan/env/env.dart';
 import 'package:my_ikimono_zukan/view/screens/home_screen.dart';
 import 'package:my_ikimono_zukan/view/screens/login_screen.dart';
+import 'package:my_ikimono_zukan/view/theme/theme_mode_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
   await Supabase.initialize(
     url: Env.supaurl,
     anonKey: Env.key1,
   );
   runApp(
     ProviderScope(
+      overrides: [
+        // ここでUnimplementedErrorを実際のSharedPreferencesのインスタンスと上書きする
+        sharedPreferencesProvider.overrideWith((ref) => prefs),
+      ],
       child: EasyLocalization(
         supportedLocales: const [
           Locale('en'),
@@ -30,30 +37,19 @@ Future<void> main() async {
 
 final supabase = Supabase.instance.client;
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeModeState = ref.watch(themeModeNotifierProvider);
     return MaterialApp(
       title: 'Supabase Flutter',
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      theme: ThemeData.dark().copyWith(
-        primaryColor: Colors.green,
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.green,
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.green,
-          ),
-        ),
-      ),
+      theme: themeModeState ? ThemeData.dark() : ThemeData.light(),
       home: supabase.auth.currentSession == null
           ? const LoginScreen()
           : const HomeScreen(),
