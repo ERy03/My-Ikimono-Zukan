@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_ikimono_zukan/env/env.dart';
+import 'package:my_ikimono_zukan/view/screens/bottom_navigation.dart';
 import 'package:my_ikimono_zukan/view/screens/home_screen.dart';
 import 'package:my_ikimono_zukan/view/screens/login_screen.dart';
 import 'package:my_ikimono_zukan/view/theme/theme_mode_provider.dart';
@@ -49,10 +50,27 @@ class MyApp extends ConsumerWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      theme: themeModeState ? ThemeData.dark() : ThemeData.light(),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        navigationBarTheme: const NavigationBarThemeData(
+          labelTextStyle: WidgetStatePropertyAll(
+            TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          iconTheme: WidgetStatePropertyAll(
+            IconThemeData(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        iconTheme:
+            const IconThemeData(color: Colors.white), // Dark mode icon color
+      ),
+      themeMode: themeModeState ? ThemeMode.dark : ThemeMode.light,
       home: supabase.auth.currentSession == null
           ? const LoginScreen()
-          : const HomeScreen(),
+          : const BottomNavigation(),
     );
   }
 }

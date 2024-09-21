@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_ikimono_zukan/main.dart';
-import 'package:my_ikimono_zukan/view/screens/account_screen.dart';
+import 'package:my_ikimono_zukan/view/screens/bottom_navigation.dart';
+import 'package:my_ikimono_zukan/view/screens/home_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -58,11 +59,11 @@ class _LoginScreenState extends State<LoginScreen> {
         if (session != null) {
           _redirecting = true;
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const AccountScreen()),
+            MaterialPageRoute(builder: (context) => const BottomNavigation()),
           );
         }
       },
-      onError: (error) {
+      onError: (dynamic error) {
         if (error is AuthException) {
           context.showSnackBar(error.message, isError: true);
         } else {
