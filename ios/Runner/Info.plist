@@ -60,5 +60,10 @@
   <string>Request users to choose an image from their library to display on the app</string>
   <key>NSCameraUsageDescription</key>
   <string>Request users to take a picture with the camera to display the picture on the app</string>
+  <key>CFBundleLocalizations</key>
+  <array>
+    <string>en</string>
+    <string>ja</string>
+  </array>
 </dict>
 </plist>
