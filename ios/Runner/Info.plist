@@ -45,5 +45,20 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>io.supabase.flutterquickstart</string>
+      </array>
+    </dict>
+  </array>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>Request users to choose an image from their library to display on the app</string>
+  <key>NSCameraUsageDescription</key>
+  <string>Request users to take a picture with the camera to display the picture on the app</string>
 </dict>
 </plist>
