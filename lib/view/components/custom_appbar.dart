@@ -73,6 +73,7 @@ class CustomAppBar extends AppBar {
                         minimumSize: WidgetStatePropertyAll(Size(210, 50)),
                       ),
                       trailingIcon: Switch.adaptive(
+                        activeColor: const Color(0xffc9f082),
                         value: themeModeProvider,
                         onChanged: (val) {
                           toggle(val);
