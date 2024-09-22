@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:my_ikimono_zukan/domain/ikimono.dart';
+import 'package:my_ikimono_zukan/view/screens/ikimono_detail_screen.dart';
 
 class IkimonoContainer extends StatelessWidget {
-  const IkimonoContainer({super.key});
+  const IkimonoContainer({required this.ikimono, super.key});
+
+  final Ikimono ikimono;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO
+        Navigator.push(
+          context,
+          MaterialPageRoute<dynamic>(
+            builder: (context) => IkimonoDetailScreen(ikimono: ikimono),
+          ),
+        );
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -17,17 +26,17 @@ class IkimonoContainer extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.blue,
                 borderRadius: BorderRadius.circular(8),
-                image: const DecorationImage(
+                image: DecorationImage(
                   fit: BoxFit.cover,
                   image: NetworkImage(
-                    'https://images.unsplash.com/photo-1486365227551-f3f90034a57c?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    ikimono.ikimonoUrl,
                   ),
                 ),
               ),
             ),
           ),
-          const Text(
-            'some bird',
+          Text(
+            ikimono.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
