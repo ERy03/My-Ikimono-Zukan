@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:my_ikimono_zukan/domain/ikimono.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,25 +11,55 @@ class IkimonoRepository {
   final SupabaseClient supabaseClient;
 
   Future<List<Ikimono>> fetchIkimono() async {
+    final response = await supabaseClient.from('ikimono').select(
+      '''
+id, name, description, user, location, tag, captured_date, ikimono_url''',
+    ).eq('user', supabaseClient.auth.currentUser!.id);
+    return response.map(Ikimono.fromJson).toList();
+  }
+
+  Future<List<Ikimono>> searchIkimono(String query) async {
     final response = await supabaseClient
         .from('ikimono')
         .select(
-            'id, name, description, user, location, tag, captured_date, ikimono_url')
-        .eq('user', supabaseClient.auth.currentUser!.id);
+          '''
+id, name, description, user, location, tag, captured_date, ikimono_url''',
+        )
+        .eq('user', supabaseClient.auth.currentUser!.id)
+        .ilike('name', '%$query%');
     return response.map(Ikimono.fromJson).toList();
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 IkimonoRepository ikimonoRepository(
   IkimonoRepositoryRef ref,
 ) {
   return IkimonoRepository(supabaseClient: Supabase.instance.client);
 }
 
-@Riverpod(keepAlive: true)
-Future<List<Ikimono>> fetchIkimono(
-  FetchIkimonoRef ref,
-) {
-  return ref.watch(ikimonoRepositoryProvider).fetchIkimono();
+@riverpod
+Future<List<Ikimono>> fetchIkimonos(
+  FetchIkimonosRef ref, {
+  required String query,
+}) async {
+  await Future<void>.delayed(const Duration(milliseconds: 500));
+  final repository = ref.watch(ikimonoRepositoryProvider);
+  final link = ref.keepAlive();
+  Timer? timer;
+  ref.onDispose(() {
+    timer?.cancel();
+  });
+  ref.onCancel(() {
+    timer = Timer(const Duration(seconds: 30), link.close);
+  });
+  ref.onResume(() {
+    timer?.cancel();
+  });
+
+  if (query.isEmpty) {
+    return repository.fetchIkimono();
+  } else {
+    return repository.searchIkimono(query);
+  }
 }
