@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_ikimono_zukan/data/repositories/ikimono_repository.dart';
+import 'package:my_ikimono_zukan/domain/search_text_notifier.dart';
 import 'package:my_ikimono_zukan/view/components/custom_search_bar.dart';
 import 'package:my_ikimono_zukan/view/components/ikimono_container.dart';
 
@@ -11,10 +12,13 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with AutomaticKeepAliveClientMixin<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final ikimonoList = ref.watch(fetchIkimonoProvider);
+    super.build(context);
+    final query = ref.watch(searchTextNotifierProvider);
+    final ikimonoList = ref.watch(fetchIkimonosProvider(query: query));
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
@@ -30,6 +34,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Text(e.toString()),
                 ),
                 data: (ikimonoList) {
+                  if (ikimonoList.isEmpty) {
+                    return const Center(
+                      child: Text('Not found'),
+                    );
+                  }
                   return GridView.builder(
                     itemCount: ikimonoList.length,
                     padding: const EdgeInsets.symmetric(
@@ -55,4 +64,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

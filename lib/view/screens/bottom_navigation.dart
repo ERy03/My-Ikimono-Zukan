@@ -22,7 +22,7 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation> {
   ];
   // 選択されている画面のインデックス
   int _selectedIndex = 0;
-
+  final PageController controller = PageController();
   @override
   Widget build(BuildContext context) {
     final themeModeState = ref.watch(themeModeNotifierProvider);
@@ -34,9 +34,18 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation> {
           ref.read(themeModeNotifierProvider.notifier).toggle();
         },
       ),
-      body: _screens[_selectedIndex],
+      body: PageView(
+        controller: controller,
+        children: _screens,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
       bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
+        onDestinationSelected: (index) {
+          controller.jumpToPage(index);
           setState(() {
             _selectedIndex = index;
           });
