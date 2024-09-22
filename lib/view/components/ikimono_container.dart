@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:my_ikimono_zukan/domain/ikimono.dart';
 import 'package:my_ikimono_zukan/view/screens/ikimono_detail_screen.dart';
@@ -28,7 +29,7 @@ class IkimonoContainer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(
+                  image: CachedNetworkImageProvider(
                     ikimono.ikimonoUrl,
                   ),
                 ),

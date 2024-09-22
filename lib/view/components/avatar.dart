@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_ikimono_zukan/main.dart';
@@ -34,11 +35,15 @@ class _AvatarState extends State<Avatar> {
             ),
           )
         else
-          Image.network(
-            widget.imageUrl!,
+          CachedNetworkImage(
+            imageUrl: widget.imageUrl!,
             width: 150,
             height: 150,
             fit: BoxFit.cover,
+            placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
         ElevatedButton(
           onPressed: _isLoading ? null : _upload,

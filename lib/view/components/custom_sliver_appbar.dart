@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,9 +19,13 @@ class CustomSliverAppBar extends StatelessWidget {
       pinned: true,
       stretch: true,
       flexibleSpace: FlexibleSpaceBar(
-        background: Image.network(
-          ikimonoUrl,
+        background: CachedNetworkImage(
           fit: BoxFit.cover,
+          imageUrl: ikimonoUrl,
+          placeholder: (context, url) => const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
         stretchModes: const [
           StretchMode.zoomBackground,
