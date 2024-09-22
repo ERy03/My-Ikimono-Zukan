@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_ikimono_zukan/env/env.dart';
 import 'package:my_ikimono_zukan/view/screens/bottom_navigation.dart';
-import 'package:my_ikimono_zukan/view/screens/home_screen.dart';
 import 'package:my_ikimono_zukan/view/screens/login_screen.dart';
 import 'package:my_ikimono_zukan/view/theme/theme_mode_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +11,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   await EasyLocalization.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   await Supabase.initialize(
