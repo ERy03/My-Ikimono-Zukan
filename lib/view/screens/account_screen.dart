@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_ikimono_zukan/data/repositories/profile_repository.dart';
 import 'package:my_ikimono_zukan/main.dart';
 import 'package:my_ikimono_zukan/view/components/avatar.dart';
 import 'package:my_ikimono_zukan/view/screens/login_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AccountScreen extends StatefulWidget {
+class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
 
   @override
-  State<AccountScreen> createState() => _AccountScreenState();
+  ConsumerState<AccountScreen> createState() => _AccountScreenState();
 }
 
-class _AccountScreenState extends State<AccountScreen> {
+class _AccountScreenState extends ConsumerState<AccountScreen> {
   final _usernameController = TextEditingController();
 
   String? _avatarUrl;
@@ -58,6 +60,7 @@ class _AccountScreenState extends State<AccountScreen> {
     };
     try {
       await supabase.from('profiles').upsert(updates);
+      ref.invalidate(fetchUserProvider);
       if (mounted) context.showSnackBar('Successfully updated profile!');
     } on PostgrestException catch (error) {
       if (mounted) context.showSnackBar(error.message, isError: true);
