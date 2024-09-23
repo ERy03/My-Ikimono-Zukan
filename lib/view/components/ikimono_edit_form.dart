@@ -93,8 +93,9 @@ class _IkimonoEditFormState extends ConsumerState<IkimonoEditForm> {
         _descriptionController.clear();
         _dateController.clear();
         ref.invalidate(fetchIkimonosProvider);
-        await Navigator.of(context).pushReplacement(
+        await Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const BottomNavigation()),
+          (route) => false,
         );
       }
     } on StorageException catch (error) {
