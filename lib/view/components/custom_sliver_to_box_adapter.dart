@@ -2,10 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:my_ikimono_zukan/data/repositories/ikimono_repository.dart';
 import 'package:my_ikimono_zukan/data/repositories/profile_repository.dart';
+import 'package:my_ikimono_zukan/main.dart';
+import 'package:my_ikimono_zukan/view/screens/bottom_navigation.dart';
+import 'package:my_ikimono_zukan/view/screens/edit_ikimono_screen.dart';
 
 class CustomSliverToBoxAdapter extends ConsumerWidget {
   const CustomSliverToBoxAdapter({
+    required this.ikimonoUrl,
+    required this.id,
     required this.name,
     required this.location,
     required this.description,
@@ -14,11 +20,13 @@ class CustomSliverToBoxAdapter extends ConsumerWidget {
     super.key,
   });
 
+  final int id;
   final String name;
   final String location;
   final String description;
   final String tag;
   final DateTime capturedDate;
+  final String ikimonoUrl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -164,6 +172,79 @@ x8fA%3D%3D''',
                       .textTheme
                       .bodySmall!
                       .copyWith(color: Colors.grey),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<EditIkimonoScreen>(
+                        builder: (BuildContext context) {
+                          return EditIkimonoScreen(
+                            id: id,
+                            name: name,
+                            location: location,
+                            description: description,
+                            tag: tag,
+                            capturedDate: capturedDate,
+                            ikimonoUrl: ikimonoUrl,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.edit,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () {
+                    showDialog<AlertDialog>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog.adaptive(
+                        title: const Text('Are you sure?'),
+                        content: const Text('This action cannot be undone.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              ref
+                                  .read(ikimonoRepositoryProvider)
+                                  .deleteIkimono(id, name);
+                              ref.invalidate(fetchIkimonosProvider);
+                              context
+                                  .showSnackBar('Successfully deleted $name!');
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute<BottomNavigation>(
+                                  builder: (_) {
+                                    return const BottomNavigation();
+                                  },
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Delete',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
                 ),
               ],
             ),

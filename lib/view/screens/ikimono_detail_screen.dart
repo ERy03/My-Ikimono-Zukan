@@ -17,11 +17,13 @@ class IkimonoDetailScreen extends StatelessWidget {
             ikimonoUrl: ikimono.ikimonoUrl,
           ),
           CustomSliverToBoxAdapter(
+            id: ikimono.id,
             name: ikimono.name,
             description: ikimono.description,
             tag: ikimono.tag,
             capturedDate: ikimono.capturedDate,
             location: ikimono.location,
+            ikimonoUrl: ikimono.ikimonoUrl,
           ),
         ],
       ),

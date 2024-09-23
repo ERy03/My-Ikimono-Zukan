@@ -13,7 +13,6 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
   final _usernameController = TextEditingController();
-  final _websiteController = TextEditingController();
 
   String? _avatarUrl;
   var _loading = true;
@@ -29,7 +28,6 @@ class _AccountScreenState extends State<AccountScreen> {
       final data =
           await supabase.from('profiles').select().eq('id', userId).single();
       _usernameController.text = (data['username'] ?? '') as String;
-      _websiteController.text = (data['website'] ?? '') as String;
       _avatarUrl = (data['avatar_url'] ?? '') as String;
     } on PostgrestException catch (error) {
       if (mounted) context.showSnackBar(error.message, isError: true);
@@ -52,12 +50,10 @@ class _AccountScreenState extends State<AccountScreen> {
       _loading = true;
     });
     final userName = _usernameController.text.trim();
-    final website = _websiteController.text.trim();
     final user = supabase.auth.currentUser;
     final updates = {
       'id': user!.id,
       'username': userName,
-      'website': website,
       'updated_at': DateTime.now().toIso8601String(),
     };
     try {
@@ -89,7 +85,7 @@ class _AccountScreenState extends State<AccountScreen> {
       }
     } finally {
       if (mounted) {
-        Navigator.of(context).pushReplacement(
+        await Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const LoginScreen()),
         );
       }
@@ -134,14 +130,12 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   void dispose() {
     _usernameController.dispose();
-    _websiteController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
         children: [
@@ -152,20 +146,56 @@ class _AccountScreenState extends State<AccountScreen> {
           const SizedBox(height: 18),
           TextFormField(
             controller: _usernameController,
-            decoration: const InputDecoration(labelText: 'User Name'),
+            onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+            decoration: const InputDecoration(
+              labelText: 'User Name',
+              labelStyle: TextStyle(color: Colors.grey),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xffc9f082),
+                ),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 18),
-          TextFormField(
-            controller: _websiteController,
-            decoration: const InputDecoration(labelText: 'Website'),
+          Center(
+            child: SizedBox(
+              width: 150,
+              child: TextButton(
+                onPressed: _loading ? null : _updateProfile,
+                style: const ButtonStyle(
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                  ),
+                  backgroundColor: WidgetStatePropertyAll(Color(0xffc9f082)),
+                ),
+                child: Text(
+                  _loading ? 'Saving...' : 'Update',
+                  style: TextStyle(
+                    color: Theme.of(context).iconTheme.color,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 18),
-          ElevatedButton(
-            onPressed: _loading ? null : _updateProfile,
-            child: Text(_loading ? 'Saving...' : 'Update'),
+          TextButton(
+            onPressed: _signOut,
+            child: Text(
+              'Sign Out',
+              style: TextStyle(
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
           ),
-          const SizedBox(height: 18),
-          TextButton(onPressed: _signOut, child: const Text('Sign Out')),
         ],
       ),
     );

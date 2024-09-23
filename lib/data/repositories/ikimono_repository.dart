@@ -29,6 +29,10 @@ id, name, description, user, location, tag, captured_date, ikimono_url''',
         .ilike('name', '%$query%');
     return response.map(Ikimono.fromJson).toList();
   }
+
+  Future<void> deleteIkimono(int ikimonoId, String name) async {
+    await supabaseClient.from('ikimono').delete().eq('id', ikimonoId);
+  }
 }
 
 @riverpod

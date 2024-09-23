@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_ikimono_zukan/main.dart';
 import 'package:my_ikimono_zukan/view/screens/bottom_navigation.dart';
-import 'package:my_ikimono_zukan/view/screens/home_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -92,12 +91,45 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 18),
           TextFormField(
             controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
+            onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+            decoration: const InputDecoration(
+              labelText: 'Email',
+              labelStyle: TextStyle(color: Colors.grey),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xffc9f082),
+                ),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 18),
-          ElevatedButton(
-            onPressed: _isLoading ? null : _signIn,
-            child: Text(_isLoading ? 'Sending...' : 'Send Magic Link'),
+          Center(
+            child: SizedBox(
+              width: 150,
+              child: TextButton(
+                onPressed: _isLoading ? null : _signIn,
+                style: const ButtonStyle(
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                  ),
+                  backgroundColor: WidgetStatePropertyAll(Color(0xffc9f082)),
+                ),
+                child: Text(
+                  _isLoading ? 'Sending...' : 'Send Magic Link',
+                  style: TextStyle(
+                    color: Theme.of(context).iconTheme.color,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),

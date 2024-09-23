@@ -22,7 +22,7 @@ final ikimonoRepositoryProvider =
 );
 
 typedef IkimonoRepositoryRef = AutoDisposeProviderRef<IkimonoRepository>;
-String _$fetchIkimonosHash() => r'3b57a7dbf0b840f182af3a621dc878c284bea580';
+String _$fetchIkimonosHash() => r'5a90f715b9d2b4776bd4211dc3e590c620843818';
 
 /// Copied from Dart SDK
 class _SystemHash {
