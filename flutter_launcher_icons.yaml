@@ -1,0 +1,13 @@
+# Run with dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/ikimono_icon.png"
+  adaptive_icon_background: "#c9f082"
+  adaptive_icon_foreground: "assets/images/ikimono_icon.png"
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false
